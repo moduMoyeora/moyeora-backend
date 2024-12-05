@@ -16,7 +16,7 @@ app.use("/api", testRoute);
 
 // 기본 라우트
 app.get("/", (req, res) => {
-  res.send("Hello, this is the backend API!");
+  res.send("Helloo, this is the backend API!");
 });
 
 app.listen(port, () => {
