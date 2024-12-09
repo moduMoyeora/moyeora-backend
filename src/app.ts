@@ -1,5 +1,6 @@
 import express from 'express';
-import postRoutes from './routes/post';
+import postRouter from './routes/postRouter';
+import boardRouter from './routes/boardRouter';
 
 const app = express();
 
@@ -8,10 +9,9 @@ dotenv.config();
 
 app.use(express.json());
 
-// 라우트 연결
-app.use('/posts', postRoutes);
+app.use('/posts', postRouter);
+app.use('/boards', boardRouter);
 
-// 서버 실행
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on http://localhost:${process.env.PORT}`);
 });
