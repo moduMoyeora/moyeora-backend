@@ -1,7 +1,7 @@
 import pool from '../mariadb';
-import { PostRow } from '../types/index';
+import { Post } from '../types/index';
 
-export const getPostByIdFromDB = async (id: number): Promise<PostRow | null> => {
+export const getPostByIdFromDB = async (id: number): Promise<Post | null> => {
     const sql = `
         SELECT 
             post.*, 
@@ -13,6 +13,6 @@ export const getPostByIdFromDB = async (id: number): Promise<PostRow | null> => 
         JOIN board ON post.board_id = board.id
         WHERE post.id = ?
     `;
-    const [rows] = await pool.query<PostRow[]>(sql, [id]);
-    return rows.length ? rows[0] : null;
+    const [rows] = await pool.query<Post[]>(sql, [id]);
+    return rows.length > 0 ? rows[0] : null;
 };

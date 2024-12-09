@@ -1,15 +1,17 @@
 import { RowDataPacket } from 'mysql2';
 
-
-
-export interface Board {
+export interface TotalCountResult extends RowDataPacket {
+    totalCount: number;
+}
+  
+export interface Board extends RowDataPacket {
     id: number;
     name: string;
     description: string;
     created_at: Date;
 }
-  
-export interface Post {
+
+export interface Post extends RowDataPacket {
     id: number;
     member_id: number;
     board_id: number;
@@ -18,8 +20,8 @@ export interface Post {
     created_at: Date;
     updated_at: Date;
 }
-  
-export interface Member {
+
+export interface Member extends RowDataPacket{
     id: number;
     email: string;
     password: string;
@@ -27,7 +29,3 @@ export interface Member {
     created_at: Date;
     updated_at: Date;
 }
-  
-export interface BoardRow extends Board, RowDataPacket {}
-export interface PostRow extends Post, RowDataPacket {}
-export interface MemberRow extends Member, RowDataPacket {}

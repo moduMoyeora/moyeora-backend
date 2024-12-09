@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getPostByIdController } from '../constrollers/postController';
+import { getPostByIdController } from '../controllers/postController';
 import { validateGetPostById } from '../validators/postValidator';
 import { validateRequest } from '../validators/validateRequest';
 

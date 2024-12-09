@@ -4,7 +4,7 @@ export const validateGetPostsByBoardId = [
     param('board_id')
         .isNumeric().withMessage('board_id는 숫자여야 합니다.')
         .notEmpty().withMessage('board_id는 필수 값입니다.')
-        .toInt()
+        .toInt(),
     // query('limit')
     //     .optional()
     //     .isInt({ min: 1 }).withMessage('limit은 1 이상의 정수여야 합니다.')
@@ -17,6 +17,6 @@ export const validateGetPostsByBoardId = [
 
 export const validateGetPostById = [
     param('id')
-        .isNumeric().withMessage('요청 데이터가 유효하지 않습니다.')
-        .toInt()
+        .isNumeric().withMessage('id는 숫자여야 합니다.')
+        .toInt(),
 ];

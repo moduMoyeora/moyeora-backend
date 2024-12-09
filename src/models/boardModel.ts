@@ -1,8 +1,15 @@
 import pool from '../mariadb';
-import { BoardRow } from '../types/index';
+import { Board, TotalCountResult } from '../types/index';
 
-export const getPostsByBoardIdFromDB = async (board_id: number, limit: number, offset: number): Promise<BoardRow[]>=> {
-    const sql = `
+export const getPostsByBoardIdFromDB = async (
+    board_id: number, 
+    limit: number, 
+    offset: number
+    ): Promise<{ 
+        posts: Board[]; 
+        totalCount: number 
+    }> => {
+    const queryPosts = `
         SELECT 
             post.id, 
             post.title, 
@@ -15,6 +22,15 @@ export const getPostsByBoardIdFromDB = async (board_id: number, limit: number, o
         ORDER BY post.created_at DESC
         LIMIT ? OFFSET ?
     `;
-    const [rows] = await pool.query<BoardRow[]>(sql, [board_id, limit, offset]);
-    return rows;
+    const [rows] = await pool.query<Board[]>(queryPosts, [board_id, limit, offset]);
+    
+    const queryCount = `
+        SELECT COUNT(*) AS totalCount 
+        FROM post
+        WHERE board_id = ?
+    `;
+    const [countResult] = await pool.query<TotalCountResult[]>(queryCount, [board_id]);
+    const totalCount = countResult[0]?.totalCount || 0;
+
+    return { posts: rows, totalCount };
 };
