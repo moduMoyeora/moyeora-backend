@@ -14,3 +14,17 @@ export const createPost = async (req: Request, res: Response) => {
     return;
   }
 };
+
+export const updatePost = async (req: Request, res: Response) => {
+  const postId = parseInt(req.params.postId);
+  const postData = req.body;
+
+  try {
+    const post = await postService.updatePost(postId, postData);
+    res.status(200).json(post);
+    return;
+  } catch (error) {
+    res.status(500).json({ message: '서버 오류가 발생했습니다' });
+    return;
+  }
+}

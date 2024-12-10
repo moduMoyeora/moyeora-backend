@@ -29,3 +29,25 @@ export const create = async (
 
   return posts[0];
 };
+
+export const update = async (
+  memberId: number,
+  postId: number,
+  data: createPostDto
+) => {
+  const [result] = await pool.query<ResultSetHeader>(
+    'UPDATE post SET title = ?, content = ? WHERE id = ? AND member_id = ?',
+    [data.title, data.content, postId, memberId]
+  )
+
+  if (result.affectedRows === 0) {
+    throw Error("게시글을 찾을 수 없습니다.");
+  }
+
+  const [posts] = await pool.query<Post[]>(
+    'SELECT * FROM post WHERE id = ?',
+    [postId]
+  )
+
+  return posts[0];
+}

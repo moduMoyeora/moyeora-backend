@@ -10,3 +10,13 @@ export const createPost = async (
 
   return post;
 };
+
+export const updatePost = async (
+  postId: number,
+  postData: createPostDto
+) => {
+  const memberId = 1; // 테스트용 유저
+  const post = await postModel.update(memberId, postId, postData);
+
+  return post;
+}
