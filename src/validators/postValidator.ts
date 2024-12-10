@@ -9,7 +9,7 @@ const boardParamValidationRules = () => {
   ]
 }
 
-const postParamValidationRules = () => {
+export const postParamValidationRules = () => {
   return [
     param('postId')
       .notEmpty().withMessage('게시글 아이디는 필수입니다.')
