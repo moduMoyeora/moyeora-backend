@@ -3,6 +3,9 @@ import { RowDataPacket } from 'mysql2';
 export interface TotalCountResult extends RowDataPacket {
     totalCount: number;
 }
+export interface CheckBoardExists extends RowDataPacket {
+    exists: number;
+}
   
 export interface Board extends RowDataPacket {
     id: number;

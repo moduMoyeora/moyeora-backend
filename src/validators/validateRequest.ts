@@ -7,7 +7,8 @@ export const validateRequest = (req : Request, res : Response, next : NextFuncti
 
     if (!errors.isEmpty()) {
         res.status(StatusCodes.BAD_REQUEST).json({ 
-            message :'요청 데이터가 유효하지 않습니다.'
+            message :'요청 데이터가 유효하지 않습니다.',
+            errors : errors.array()
         });
         return;
     }
