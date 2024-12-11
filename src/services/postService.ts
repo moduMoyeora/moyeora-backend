@@ -1,18 +1,24 @@
 import * as postModel from '../models/postModel';
+import { Post, Board, TotalCountResult, CheckBoardExists } from '../types/interface/postInterface';
 
-export const getPostById = async (id: number, board_id: number)=> {
-    return await postModel.getPostByIdFromDB(id, board_id);
+export const getPost = async (
+    postId: number, 
+    boardId: number
+    ): Promise<Post>=> {
+    return await postModel.getPostById(postId, boardId);
 };
 
-export const checkBoard = async (board_id: number): Promise<boolean> => {
-    return await postModel.checkBoardExists(board_id);
+export const checkBoard = async (
+    boardId: number
+    ): Promise<void> => {
+    await postModel.checkBoardExists(boardId);
 };
 
-export const getPostsByBoardId = async (
-    board_id: number, 
+export const getPosts = async (
+    boardId: number, 
     limit: number, 
     currentPage: number
     ) => {
     const offset = limit * (currentPage - 1);
-    return await postModel.getPostsByBoardIdFromDB(board_id, limit, offset);
+    return await postModel.getPostsByBoardId(boardId, limit, offset);
 };

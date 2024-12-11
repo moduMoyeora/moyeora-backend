@@ -1,12 +1,11 @@
 import express from 'express';
-import { getPostByIdController, getPostsByBoardIdController } from '../controllers/postController';
-import { validateGetPostById, validateGetPostsByBoardId } from '../validators/postValidator';
-import { validateRequest } from '../validators/validateRequest';
+import { getPost, getPosts } from '../controllers/postController';
+import { getPostByIdValidationrules, getPostsByBoardIdValidationRules, validatePost } from '../validators/postValidator';
 
 const router = express.Router({mergeParams: true});
 
-router.get('/:id',  validateGetPostById, validateRequest, getPostByIdController);
+router.get('/:postId',  getPostByIdValidationrules(), validatePost, getPost);
 
-router.get('/', validateGetPostsByBoardId, validateRequest, getPostsByBoardIdController);
+router.get('/', getPostsByBoardIdValidationRules(), validatePost, getPosts);
 
 export default router;

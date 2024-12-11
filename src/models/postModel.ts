@@ -1,10 +1,12 @@
+import { ResultSetHeader } from 'mysql2';
 import pool from '../config/db';
 import { Post, Board, TotalCountResult, CheckBoardExists } from '../types/interface/postInterface';
+import { NotFoundError } from '../errors/httpError';
 
-export const getPostByIdFromDB = async (
-    id: number,
-    board_id: number
-    ): Promise<Post | null> => {
+export const getPostById = async (
+    postId: number,
+    boardId: number
+    ): Promise<Post> => {
     const sql = `
         SELECT 
             post.*, 
@@ -16,18 +18,26 @@ export const getPostByIdFromDB = async (
         JOIN board ON post.board_id = board.id
         WHERE post.id = ? AND post.board_id = ?
     `;
-    const [rows] = await pool.query<Post[]>(sql, [id, board_id]);
-    return rows.length > 0 ? rows[0] : null;
+    const [result] = await pool.query<Post[]>(sql, [postId, boardId]);
+    if (result.length === 0) {
+        throw new NotFoundError("게시글을 찾을 수 없습니다.");
+      }
+    return result[0];
+    //return rows.length > 0 ? rows[0] : null;
 };
 
-export const checkBoardExists = async (board_id: number): Promise<boolean> => {
+export const checkBoardExists = async (
+    boardId: number
+    ): Promise<void> => {
     const query = `SELECT 1 FROM board WHERE id = ? LIMIT 1`;
-    const [rows] = await pool.query<CheckBoardExists[]>(query, [board_id]);
-    return rows.length > 0;
+    const [result] = await pool.query<CheckBoardExists[]>(query, [boardId]);
+    if (result.length === 0) {
+        throw new NotFoundError(`게시판 ID ${boardId}를 찾을 수 없습니다.`);
+    }
 };
 
-export const getPostsByBoardIdFromDB = async (
-    board_id: number, 
+export const getPostsByBoardId = async (
+    boardId: number, 
     limit: number, 
     offset: number
     ): Promise<{ 
@@ -47,15 +57,15 @@ export const getPostsByBoardIdFromDB = async (
         ORDER BY post.created_at DESC
         LIMIT ? OFFSET ?
     `;
-    const [rows] = await pool.query<Board[]>(queryPosts, [board_id, limit, offset]);
-    
+    const [result] = await pool.query<Board[]>(queryPosts, [boardId, limit, offset]);
+
     const queryCount = `
         SELECT COUNT(*) AS totalCount 
         FROM post
         WHERE board_id = ?
     `;
-    const [countResult] = await pool.query<TotalCountResult[]>(queryCount, [board_id]);
+    const [countResult] = await pool.query<TotalCountResult[]>(queryCount, [boardId]);
     const totalCount = countResult[0]?.totalCount || 0;
-
-    return { posts: rows, totalCount };
+    
+    return { posts: result, totalCount };
 };

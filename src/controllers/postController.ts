@@ -1,63 +1,63 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import * as postService  from '../services/postService';
 import { StatusCodes } from 'http-status-codes';
 
-export const getPostByIdController = async (req: Request, res: Response): Promise<void> => {
+export const getPost = async (
+    req: Request, 
+    res: Response,
+    next: NextFunction
+    ): Promise<void> => {
 
-    const id = Number(req.params.id);
-    const board_id = Number(req.params.board_id);
+    const postId = Number(req.params.postId);
+    const boardId = Number(req.params.boardId);
 
     try {
-        const post = await postService.getPostById(id, board_id);
-        if (!post) {
-            throw new Error('게시물을 찾을 수 없습니다.');
-        }
-        else{
-            res.status(StatusCodes.OK).json({ 
+        const post = await postService.getPost(postId, boardId);
+            res.status(200).json({ 
                 message: '게시물 조회 성공' , 
                 data : post
             });
-        }
     } catch (error) {
-        if (error instanceof Error) {
-            res.status(StatusCodes.NOT_FOUND).json({ message: error.message });
-        } else {
-            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-                message: '서버 오류가 발생했습니다.',
-            });
-        }
-        return;
+        next(error);
     }
 };
 
-export const getPostsByBoardIdController = async (req: Request, res: Response): Promise<void> => {
+export const getPosts = async (
+    req: Request, 
+    res: Response,
+    next: NextFunction
+    ): Promise<void> => {
 
-    const board_id = Number(req.params.board_id);
+    const boardId = Number(req.params.boardId);
     const limit = Number(req.query.limit) || 20;
     const currentPage = Number(req.query.currentPage) || 1;
-    const boardExists = await postService.checkBoard(board_id);
-    if (!boardExists) {
-        res.status(StatusCodes.NOT_FOUND).json({ message: '게시판을 찾을 수 없습니다.' });
-        return;
-    }
-    const { posts, totalCount } = await postService.getPostsByBoardId(board_id, limit, currentPage);
-    if(posts.length > 0) {
-        res.status(StatusCodes.OK).json({ 
-            message: '게시물 목록 조회 성공',
-            data : {
-                posts,
-                pagination : {
-                    totalCount,
-                    currentPage : currentPage,
-                    totalPages: Math.ceil(totalCount / limit),
-                    limit : limit,
-                    },
-            },
-        });
-    }else{
-        res.status(StatusCodes.OK).json({ 
-            message: '등록된 게시물이 없습니다.' 
-        });
+    
+    
+    try{
+        await postService.checkBoard(boardId);
+
+        const { posts, totalCount } = await postService.getPosts(boardId, limit, currentPage);
+        
+        if(posts.length > 0) {
+            res.status(StatusCodes.OK).json({ 
+                message: '게시물 목록 조회 성공',
+                data : {
+                    posts,
+                    pagination : {
+                        totalCount,
+                        currentPage : currentPage,
+                        totalPages: Math.ceil(totalCount / limit),
+                        limit : limit,
+                        },
+                },
+            });
+        }else{
+            res.status(StatusCodes.OK).json({ 
+                message: '게시판에 등록된 게시물이 없습니다.' 
+            });
+        }
+    } catch(error){
+        next(error);
     }
 };
 
