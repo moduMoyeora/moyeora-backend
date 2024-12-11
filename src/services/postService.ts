@@ -24,8 +24,6 @@ export const updatePost = async (
 export const deletePost = async (
   memberId: number,
   postId: number
-): Promise<boolean> => {
+): Promise<void> => {
   const isDeleted = await postModel.deleteById(memberId, postId);
-
-  return isDeleted;
 };

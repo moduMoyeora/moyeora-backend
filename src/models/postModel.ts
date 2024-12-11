@@ -1,6 +1,7 @@
 import { ResultSetHeader } from 'mysql2';
 import pool from '../config/db';
 import { createPostDto, Post } from '../type/interface/postInterface';
+import { NotFoundError } from '../errors/httpError';
 
 export const create = async (
   memberId: number,
@@ -26,12 +27,12 @@ export const update = async (
   data: createPostDto
 ): Promise<Post> => {
   const [result] = await pool.query<ResultSetHeader>(
-    'UPDATE post SET title = ?, content = ? WHERE id = ? AND member_id = ?',
+    'UPDATE post SET title = ?, content = ? WHERE id = ?',
     [data.title, data.content, postId, memberId]
   )
 
   if (result.affectedRows === 0) {
-    throw Error("게시글을 찾을 수 없습니다.");
+    throw new NotFoundError("게시글을 찾을 수 없습니다.");
   }
 
   const [posts] = await pool.query<Post[]>(
@@ -45,15 +46,13 @@ export const update = async (
 export const deleteById = async (
   memberId: number,
   postId: number
-): Promise<boolean> => {
+): Promise<void> => {
   const [result] = await pool.query<ResultSetHeader>(
-    'DELETE FROM post WHERE id = ? AND member_id = ?',
+    'DELETE FROM post WHERE id = ?',
     [postId, memberId]
   )
 
   if (result.affectedRows === 0) {
-    throw Error("게시글을 찾을 수 없습니다.");
+    throw new NotFoundError("게시글을 찾을 수 없습니다.");
   }
-
-  return true;
 }

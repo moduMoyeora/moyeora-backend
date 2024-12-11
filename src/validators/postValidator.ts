@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { body, param, validationResult } from "express-validator";
+import { BadRequestError } from "../errors/httpError";
 
 const boardParamValidationRules = () => {
   return [
@@ -39,12 +40,11 @@ export const updatePostValidationRules = () => {
   ]
 }
 
-export const validatePost = (req: Request, res: Response, next: NextFunction) => {
+export const validatePost = (req: Request, _res: Response, next: NextFunction) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    res.status(400).json(errors);
-    return;
+    next(new BadRequestError());
   }
 
   next();
