@@ -14,6 +14,7 @@ app.use(express.json());
 
 app.use("/boards/:boardId/posts", postRoute);
 
+// 에러 핸들링을 위한 미들웨어 추가
 app.use(errorHandler);
 
 app.listen(port, () => {
