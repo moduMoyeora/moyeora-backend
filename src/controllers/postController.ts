@@ -52,7 +52,7 @@ export const getPosts = async (
                 },
             });
         }else{
-            res.status(StatusCodes.OK).json({ 
+            res.status(StatusCodes.NO_CONTENT).json({ 
                 message: '게시판에 등록된 게시물이 없습니다.' 
             });
         }
