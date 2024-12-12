@@ -45,6 +45,7 @@ export const deletePost = async (
   const memberId = 1;
 
   try {
+    await postService.deletePost(postId);
     res.status(204).end();
   } catch (error) {
     next(error);
