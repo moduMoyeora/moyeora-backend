@@ -1,0 +1,26 @@
+name: pr-validation
+
+# PR이 생성되거나 업데이트될 때 실행
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  setup:  # 의존성 설치
+    runs-on: ubuntu-latest
+    steps:
+      - run: npm install
+
+  lint:  # lint 검사
+    needs: setup  
+    runs-on: ubuntu-latest
+    steps:
+      - run: npm run lint
+
+  build:  # typecheck와 build
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - run: npx tsc
+    
