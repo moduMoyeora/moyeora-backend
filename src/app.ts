@@ -1,9 +1,11 @@
 import express from "express";
 import dotenv from "dotenv";
 import userRoute from "./routes/userRoute";
+import postRoute from "./routes/postRoute";
+import { errorHandler } from "./middlewares/errorMiddleware";
 
-// 환경 변수 로드
 dotenv.config();
+const PORT = process.env.PORT
 
 const app = express();
 
@@ -11,8 +13,9 @@ const app = express();
 app.use(express.json());
 
 app.use("/users", userRoute);
+app.use("/boards/:boardId/posts", postRoute);
 
-const PORT = process.env.PORT
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
