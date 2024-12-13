@@ -1,6 +1,6 @@
 import { ResultSetHeader, RowDataPacket } from 'mysql2';
 import pool from '../config/db';
-import { User } from '../types/userInterface';
+import { User } from '../types/interface/userInterface';
 
 
 
