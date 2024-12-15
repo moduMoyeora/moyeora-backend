@@ -1,64 +1,55 @@
 import { ResultSetHeader, RowDataPacket } from 'mysql2';
 import pool from '../config/db';
-import { User } from '../types/interface/userInterface';
-
-
+import { LoginResult, User } from '../types/interface/userInterface';
 
 export const join = async (
   email: string,
   password: string,
   nickname: string
-) => {
-  const [result] = await pool.query<ResultSetHeader>(
-    `INSERT INTO member (email, password, nickname) VALUES (?,?,?)`,
-    [email, password, nickname]
-  );
-  console.log(result);
-
-  const [users] = await pool.query<ResultSetHeader>(
-    `SELECT * FROM member WHERE id = ?`,
-    [result.insertId]
-  );
-  console.log(users);
-
-  return users;
-};
-
-export const checkEmail = async (email: string) => {
-  const [user] = await pool.query<User[]>(
-      `SELECT * FROM member WHERE email = ?`,
-      [email]
-    );
+): Promise<User> => {
+  try{
+    let query = `INSERT INTO member (email, password, nickname) VALUES (?,?,?)`
+    const [result] = await pool.query<ResultSetHeader>(query,[email, password, nickname]);
   
-  if(user.length === 0){
-    return null;
-  } 
+    query = `SELECT * FROM member WHERE id = ?`
+    const [user] = await pool.query<User[]>(query, [result.insertId]);
 
-  return user;
+    return user[0];
+  }catch(error){
+    console.error("DB 쿼리 실패 :", error);
+    throw new Error("DB 에러");
+  }
 };
 
-export const checkNickname = async (nickname: string) => {
-  const [user] = await pool.query<User[]>(
-      `SELECT * FROM member WHERE nickname = ?`,
-      [nickname]
-    );
+export const checkDuplicate = async (
+  field: 'email' | 'nickname',
+  value: string
+): Promise<boolean> => {
+  try{
+    const query = `SELECT COUNT(*) AS count FROM member WHERE ${field} = ?`;
+    const [rows] = await pool.query<RowDataPacket[]>(query, [value]);
+    const result = rows[0] as {count : number};
   
-  if(user.length === 0){
-    return null;
-  } 
-
-  return user;
+    return result.count > 0;  
+  } catch(error){
+    console.error("DB 쿼리 실패 :", error);
+    throw new Error("DB 에러");
+  }
 };
 
-export const login = async (email: string) => {
-        const [user] = await pool.query<User[]>(
-            `SELECT * FROM member WHERE email = ?`,
-            [email]
-          );
-        
-        if(user.length === 0){
-          return null;
-        } 
+export const login = async (email: string): Promise<LoginResult | null> => {
+  try{
+    const query = `SELECT * FROM member WHERE email = ?`
+    const [result] = await pool.query<LoginResult[]>(query,[email]);  
+    
+    if (result.length === 0) {
+      return null;
+    }
 
-        return user;
+    const user = result[0];
+    return user;
+  } catch(error){
+    console.error("DB 쿼리 실패 :", error);
+    throw new Error("DB 에러");
+  }
 };
