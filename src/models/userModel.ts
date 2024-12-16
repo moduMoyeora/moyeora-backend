@@ -1,6 +1,7 @@
 import { ResultSetHeader, RowDataPacket } from 'mysql2';
 import pool from '../config/db';
 import { LoginResult, User } from '../types/interface/userInterface';
+import { InternalServerError } from '../errors/httpError';
 
 export const join = async (
   email: string,
@@ -16,8 +17,7 @@ export const join = async (
 
     return user[0];
   }catch(error){
-    console.error("DB 쿼리 실패 :", error);
-    throw new Error("DB 에러");
+    throw new InternalServerError('데이터베이스 접근중 오류가 발생했습니다.');
   }
 };
 
@@ -32,8 +32,7 @@ export const checkDuplicate = async (
   
     return result.count > 0;  
   } catch(error){
-    console.error("DB 쿼리 실패 :", error);
-    throw new Error("DB 에러");
+    throw new InternalServerError('데이터베이스 접근중 오류가 발생했습니다.');
   }
 };
 
@@ -49,7 +48,6 @@ export const login = async (email: string): Promise<LoginResult | null> => {
     const user = result[0];
     return user;
   } catch(error){
-    console.error("DB 쿼리 실패 :", error);
-    throw new Error("DB 에러");
+    throw new InternalServerError('데이터베이스 접근중 오류가 발생했습니다.');
   }
 };

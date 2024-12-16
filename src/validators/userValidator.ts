@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
-import { body, query, validationResult } from 'express-validator';
+import { body, validationResult } from 'express-validator';
+import { BadRequestError } from "../errors/httpError";
 
 export const joinUserValidationRules = () => {
   return [
@@ -21,10 +22,10 @@ export const joinUserValidationRules = () => {
 
 export const checkDuplicateRules =() => {
   return [
-    query('field')
+    body('field')
       .notEmpty()
       .withMessage('field(email | nickname)값은 필수입니다'),
-    query('value')
+    body('value')
       .notEmpty()
       .withMessage('중복을 확인할 데이터는 필수입니다')
   ]
@@ -49,9 +50,7 @@ export const validateUser = (
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    res.status(400).json(errors);
-    return;
+    next(new BadRequestError());
   }
-
   next();
 };
