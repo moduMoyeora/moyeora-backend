@@ -10,7 +10,11 @@ jobs:
   setup:  # 의존성 설치
     runs-on: ubuntu-latest
     steps:
-      - run: npm install
+      - uses: actions/checkout@v3  # 코드 체크아웃
+      - uses: actions/setup-node@v3  # 최신 LTS 버전의 노드 설치
+        with:
+          node-version: 'lts'
+      - run: npm ci
 
   lint:  # lint 검사
     needs: setup  
