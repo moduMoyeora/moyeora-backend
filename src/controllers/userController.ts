@@ -1,10 +1,11 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import * as userModel from '../models/userModel';
-import { emit } from 'process';
+import { check_duplicate } from '../types/interface/userInterface';
+import {  UnauthorizedError } from '../errors/httpError';
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-export const joinUser = async (req: Request, res: Response) => {
+export const joinUser = async (req: Request, res: Response, next: NextFunction) => {
   const { email, password, nickname } = req.body;
 
   try {
@@ -13,68 +14,40 @@ export const joinUser = async (req: Request, res: Response) => {
 
     const user = await userModel.join(email, hashedPassword, nickname);
     res.status(200).json(user);
-    return;
   } catch (error) {
-    res.json(error);
-    return;
+    next(error);
   }
 };
 
-export const checkEmail = async (req: Request, res: Response) => {
-  const { email } = req.body;
+export const checkDuplicate = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const user = await userModel.checkEmail(email);
-    if (user === null) {
-      res.status(200).json({ email: email, isAvailable : true });
-      return;
-    }
+    const { field, value } = req.body as unknown as check_duplicate;
+    const isDuplicate = await userModel.checkDuplicate(field, value);
 
-    res.status(409).json({ email: email, isAvailable : false });
-    return;
+    res.status(200).json({ isDuplicate : isDuplicate});
   } catch (error) {
-    res.json(error);
-    return;
+    next(error);
   }
 };
 
-export const checkNickname = async (req: Request, res: Response) => {
-  const { nickname } = req.body;
-  try {
-    const user = await userModel.checkNickname(nickname);
-    if (user === null) {
-      res.status(200).json({ nickname: nickname, isAvailable : true });
-      return;
-    }
-
-    res.status(409).json({ nickname: nickname, isAvailable : false });
-    return;
-  } catch (error) {
-    res.json(error);
-    return;
-  }
-};
-
-export const loginUser = async (req: Request, res: Response) => {
+export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body;
 
   try {
-    const user = await userModel.login(email);
-    if (user === null) {
-      res.status(401).json({ message: '아이디나 비밀번호가 틀립니다' });
-      return;
+    const response = await userModel.login(email);    
+    if (response === null) {
+      throw new UnauthorizedError('아이디나 비밀번호가 틀립니다');
     }
-
-    const isMatch = await bcrypt.compareSync(password, user[0].password);
+    const user = response;
+    const isMatch = await bcrypt.compareSync(password, user.password);
     if (!isMatch) {
-      res.status(401).json({ message: '아이디나 비밀번호가 틀립니다' });
-      return;
+      throw new UnauthorizedError('아이디나 비밀번호가 틀립니다');
     }
 
     const token = jwt.sign(
       {
-        id: user[0].id,
-        email: user[0].email,
-        nickName : user[0].nickname
+        id: user.id,
+        nickName : user.nickname
       },
       process.env.PRIVATE_KEY,
       {
@@ -84,13 +57,11 @@ export const loginUser = async (req: Request, res: Response) => {
     );
 
     res.cookie('Authorization', token, {
-      httpOnly: true,
+      httpOnly: false,
     });
 
     res.status(200).json({ message: '로그인 성공' });
-    return;
   } catch (error) {
-    res.json(error);
-    return;
+    next(error);
   }
 };

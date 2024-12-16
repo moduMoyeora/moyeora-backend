@@ -15,6 +15,13 @@ export class BadRequestError extends HttpError {
   }
 }
 
+export class UnauthorizedError extends HttpError {
+  constructor(message: string = '인증에 실패했습니다.') {
+    super(message, 401);
+    this.name = 'UnauthorizedError';
+  }
+}
+
 export class ForbiddenError extends HttpError {
   constructor(message: string = '권한이 없습니다.') {
     super(message, 403);
@@ -26,5 +33,12 @@ export class NotFoundError extends HttpError {
   constructor(message: string = '리소스를 찾을 수 없습니다.') {
     super(message, 404);
     this.name = 'NotFoundError';
+  }
+}
+
+export class InternalServerError extends HttpError {
+  constructor(message: string = '서버 내부 에러'){
+    super(message, 500);
+    this.name = 'InternalServerError';
   }
 }

@@ -9,7 +9,6 @@ const PORT = process.env.PORT
 
 const app = express();
 
-// JSON 요청을 처리하기 위해 미들웨어 추가
 app.use(express.json());
 
 app.use("/users", userRoute);
