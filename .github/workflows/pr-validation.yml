@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3  # 코드 체크아웃
+      - name: List files after checkout
+        run: ls -la  # 체크아웃 후 파일 목록 확인
       - uses: actions/setup-node@v3  # 최신 LTS 버전의 노드 설치
         with:
           node-version: '22.x'
