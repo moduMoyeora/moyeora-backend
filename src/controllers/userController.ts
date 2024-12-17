@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import * as userModel from '../models/userModel';
-import { check_duplicate } from '../types/interface/userInterface';
-import { UnauthorizedError } from '../errors/httpError';
+import { check_duplicate, Profile } from '../types/interface/userInterface';
+import { NotFoundError, UnauthorizedError } from '../errors/httpError';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
@@ -11,7 +11,6 @@ export const joinUser = async (
   next: NextFunction
 ) => {
   const { email, password, nickname } = req.body;
-
   try {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hashSync(password, salt);
@@ -28,8 +27,8 @@ export const checkDuplicate = async (
   res: Response,
   next: NextFunction
 ) => {
+  const { field, value } = req.body as unknown as check_duplicate;
   try {
-    const { field, value } = req.body as unknown as check_duplicate;
     const isDuplicate = await userModel.checkDuplicate(field, value);
 
     res.status(200).json({ isDuplicate: isDuplicate });
@@ -44,7 +43,6 @@ export const loginUser = async (
   next: NextFunction
 ) => {
   const { email, password } = req.body;
-
   try {
     const response = await userModel.login(email);
     if (response === null) {
@@ -79,6 +77,40 @@ export const loginUser = async (
 
     res.status(200).json({ message: '로그인 성공' });
   } catch (error) {
+    next(error);
+  }
+};
+
+export const viewProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { userId } = req.params;
+  try {
+    const response = await userModel.viewProfile(parseInt(userId));
+    if (response === null) {
+      throw new NotFoundError('해당 사용자를 찾을 수 없습니다');
+    }
+
+    res.status(200).json(response);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const editProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { userId } = req.params;
+  const { nickname, name, gender, region, age, description }: Profile = req.body;
+  const updateData: Profile = {nickname, name, gender, region, age, description};
+  try{  
+    await userModel.editProfile(parseInt(userId), updateData);
+    res.status(200).json({message: '프로필 업데이트 완료'});
+  } catch (error){
     next(error);
   }
 };
