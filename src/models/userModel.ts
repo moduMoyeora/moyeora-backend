@@ -1,6 +1,11 @@
 import { ResultSetHeader, RowDataPacket } from 'mysql2';
 import pool from '../config/db';
-import { LoginResult, Profile, profileResult, User } from '../types/interface/userInterface';
+import {
+  LoginResult,
+  Profile,
+  profileResult,
+  User,
+} from '../types/interface/userInterface';
 import { InternalServerError } from '../errors/httpError';
 
 export const join = async (
@@ -56,33 +61,32 @@ export const login = async (email: string): Promise<LoginResult | null> => {
   }
 };
 
-export const viewProfile = async (userId: number): Promise<profileResult | null> => {
-  try{
+export const viewProfile = async (
+  userId: number
+): Promise<profileResult | null> => {
+  try {
     const query = `SELECT nickname,name,gender,region,age,description 
-      FROM member WHERE id = ?;`
+      FROM member WHERE id = ?;`;
     const [result] = await pool.query<profileResult[]>(query, [userId]);
 
-    if (result.length === 0){
+    if (result.length === 0) {
       return null;
     }
     const profile = result[0];
     return profile;
-  }catch{
+  } catch {
     throw new InternalServerError('데이터베이스 접근 중 오류가 발생했습니다.');
   }
-}
+};
 
-export const editProfile = async (
-  userId: number,
-  updateData: Profile
-) => {
-  try{
+export const editProfile = async (userId: number, updateData: Profile) => {
+  try {
     const query = `UPDATE member
     SET nickname = ?, name = ?, gender = ?, region = ?, age = ?, description = ?
-    WHERE id = ?`
+    WHERE id = ?`;
     const values = [...Object.values(updateData), userId];
-    const [result] = await pool.query<ResultSetHeader>(query, values);
-  }catch{
-    throw new InternalServerError('데이터베이스 접근 중 오류가 발생했습니다.')
+    await pool.query<ResultSetHeader>(query, values);
+  } catch {
+    throw new InternalServerError('데이터베이스 접근 중 오류가 발생했습니다.');
   }
-}
+};

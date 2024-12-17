@@ -105,12 +105,20 @@ export const editProfile = async (
   next: NextFunction
 ) => {
   const { userId } = req.params;
-  const { nickname, name, gender, region, age, description }: Profile = req.body;
-  const updateData: Profile = {nickname, name, gender, region, age, description};
-  try{  
+  const { nickname, name, gender, region, age, description }: Profile =
+    req.body;
+  const updateData: Profile = {
+    nickname,
+    name,
+    gender,
+    region,
+    age,
+    description,
+  };
+  try {
     await userModel.editProfile(parseInt(userId), updateData);
-    res.status(200).json({message: '프로필 업데이트 완료'});
-  } catch (error){
+    res.status(200).json({ message: '프로필 업데이트 완료' });
+  } catch (error) {
     next(error);
   }
 };
