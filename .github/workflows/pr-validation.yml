@@ -26,5 +26,5 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - run: npx tsc
+      - run: npm run build
     

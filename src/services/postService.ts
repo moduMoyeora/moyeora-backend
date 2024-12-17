@@ -1,7 +1,4 @@
-import {
-  createPostDto,
-  Post,
-} from '../types/interface/postInterface';
+import { createPostDto, Post } from '../types/interface/postInterface';
 import * as postModel from '../models/postModel';
 
 export const createPost = async (
@@ -24,9 +21,7 @@ export const updatePost = async (
   return post;
 };
 
-export const deletePost = async (
-  postId: number
-): Promise<void> => {
+export const deletePost = async (postId: number): Promise<void> => {
   await postModel.deleteById(postId);
 };
 

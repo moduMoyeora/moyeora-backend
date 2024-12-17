@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
-import { BadRequestError } from "../errors/httpError";
+import { BadRequestError } from '../errors/httpError';
 
 export const joinUserValidationRules = () => {
   return [
@@ -9,27 +9,23 @@ export const joinUserValidationRules = () => {
       .withMessage('사용할 아이디는 필수입니다')
       .isEmail()
       .withMessage('아이디는 이메일 형식이어야 합니다'),
-    body('password')
-      .notEmpty()
-      .withMessage('사용할 비밀번호는 필수입니다'),
+    body('password').notEmpty().withMessage('사용할 비밀번호는 필수입니다'),
     body('nickname')
       .notEmpty()
       .withMessage('사용할 닉네임은 필수입니다')
-      .isLength({ min : 2})
+      .isLength({ min: 2 })
       .withMessage('사용할 닉네임은 2자 이상이어야 합니다'),
   ];
 };
 
-export const checkDuplicateRules =() => {
+export const checkDuplicateRules = () => {
   return [
     body('field')
       .notEmpty()
       .withMessage('field(email | nickname)값은 필수입니다'),
-    body('value')
-      .notEmpty()
-      .withMessage('중복을 확인할 데이터는 필수입니다')
-  ]
-}
+    body('value').notEmpty().withMessage('중복을 확인할 데이터는 필수입니다'),
+  ];
+};
 
 export const loginUserValidationRules = () => {
   return [

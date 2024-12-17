@@ -1,11 +1,15 @@
 import { NextFunction, Request, Response } from 'express';
 import * as userModel from '../models/userModel';
 import { check_duplicate } from '../types/interface/userInterface';
-import {  UnauthorizedError } from '../errors/httpError';
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+import { UnauthorizedError } from '../errors/httpError';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
-export const joinUser = async (req: Request, res: Response, next: NextFunction) => {
+export const joinUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { email, password, nickname } = req.body;
 
   try {
@@ -19,22 +23,30 @@ export const joinUser = async (req: Request, res: Response, next: NextFunction) 
   }
 };
 
-export const checkDuplicate = async (req: Request, res: Response, next: NextFunction) => {
+export const checkDuplicate = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { field, value } = req.body as unknown as check_duplicate;
     const isDuplicate = await userModel.checkDuplicate(field, value);
 
-    res.status(200).json({ isDuplicate : isDuplicate});
+    res.status(200).json({ isDuplicate: isDuplicate });
   } catch (error) {
     next(error);
   }
 };
 
-export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
+export const loginUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { email, password } = req.body;
 
   try {
-    const response = await userModel.login(email);    
+    const response = await userModel.login(email);
     if (response === null) {
       throw new UnauthorizedError('아이디나 비밀번호가 틀립니다');
     }
@@ -44,12 +56,17 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
       throw new UnauthorizedError('아이디나 비밀번호가 틀립니다');
     }
 
+    const privateKey = process.env.PRIVATE_KEY;
+    if (!privateKey) {
+      throw new Error('PRIVATE_KEY environment variable is not set');
+    }
+
     const token = jwt.sign(
       {
         id: user.id,
-        nickName : user.nickname
+        nickName: user.nickname,
       },
-      process.env.PRIVATE_KEY,
+      privateKey,
       {
         expiresIn: '1000000000m',
         issuer: 'moyeora-server',

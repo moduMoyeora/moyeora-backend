@@ -47,9 +47,7 @@ export const update = async (
   return posts[0];
 };
 
-export const deleteById = async (
-  postId: number
-): Promise<void> => {
+export const deleteById = async (postId: number): Promise<void> => {
   const [result] = await pool.query<ResultSetHeader>(
     'DELETE FROM post WHERE id = ?',
     [postId]
