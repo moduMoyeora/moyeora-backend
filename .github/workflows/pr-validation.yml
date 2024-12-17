@@ -7,7 +7,7 @@ on:
       - main
 
 jobs:
-  setup:  # 의존성 설치
+  jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3  # 코드 체크아웃
@@ -16,15 +16,11 @@ jobs:
           node-version: '22.x'
       - run: npm ci
 
-  lint:  # lint 검사
-    needs: setup  
-    runs-on: ubuntu-latest
-    steps:
-      - run: npm run lint
+      # lint 단계
+      - name: Run lint
+        run: npm run lint
 
-  build:  # typecheck와 build
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - run: npx tsc
+      # typecheck & build 단계
+      - name: Run build
+        run: npm run build
     

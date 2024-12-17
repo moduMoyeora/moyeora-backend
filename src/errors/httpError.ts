@@ -37,7 +37,7 @@ export class NotFoundError extends HttpError {
 }
 
 export class InternalServerError extends HttpError {
-  constructor(message: string = '서버 내부 에러'){
+  constructor(message: string = '서버 내부 에러') {
     super(message, 500);
     this.name = 'InternalServerError';
   }
