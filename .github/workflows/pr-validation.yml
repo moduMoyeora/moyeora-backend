@@ -7,30 +7,20 @@ on:
       - main
 
 jobs:
-  setup:  # 의존성 설치
+  jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3  # 코드 체크아웃
-      - name: List files after checkout
-        run: ls -la  # 체크아웃 후 파일 목록 확인
       - uses: actions/setup-node@v3  # 최신 LTS 버전의 노드 설치
         with:
           node-version: '22.x'
       - run: npm ci
 
-  lint:  # lint 검사
-    needs: setup  
-    runs-on: ubuntu-latest
-    steps:
-      - name: List files after checkout
-        run: ls -la  # 체크아웃 후 파일 목록 확인
-      - run: npm run lint
+      # lint 단계
+      - name: Run lint
+        run: npm run lint
 
-  build:  # typecheck와 build
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - name: List files after checkout
-        run: ls -la  # 체크아웃 후 파일 목록 확인
-      - run: npm run build
+      # typecheck & build 단계
+      - name: Run build
+        run: npm run build
     
