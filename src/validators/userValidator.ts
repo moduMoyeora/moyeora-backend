@@ -21,8 +21,10 @@ export const joinUserValidationRules = () => {
 export const checkDuplicateRules = () => {
   return [
     body('field')
+      .isIn(['email', 'nickname'])
+      .withMessage('field는 "email" 또는 "nickname"이어야 합니다')
       .notEmpty()
-      .withMessage('field(email | nickname)값은 필수입니다'),
+      .withMessage('중복을 확인할 필드는 필수입니다'),
     body('value').notEmpty().withMessage('중복을 확인할 데이터는 필수입니다'),
   ];
 };

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import * as userModel from '../models/userModel';
-import { check_duplicate, Profile } from '../types/interface/userInterface';
+import { Profile } from '../types/interface/userInterface';
 import { NotFoundError, UnauthorizedError } from '../errors/httpError';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -27,7 +27,7 @@ export const checkDuplicate = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { field, value } = req.body as unknown as check_duplicate;
+  const { field, value } = req.body;
   try {
     const isDuplicate = await userModel.checkDuplicate(field, value);
 
