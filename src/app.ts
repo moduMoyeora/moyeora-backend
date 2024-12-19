@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import userRoute from './routes/userRoute';
 import postRoute from './routes/postRoute';
+import eventRoute from './routes/eventRoute';
 import { errorHandler } from './middlewares/errorMiddleware';
 import cors from 'cors';
 
@@ -22,6 +23,7 @@ app.use(
 
 app.use('/users', userRoute);
 app.use('/boards/:boardId/posts', postRoute);
+app.use('/boards/:boardId/posts/:postId/events', eventRoute);
 
 app.use(errorHandler);
 

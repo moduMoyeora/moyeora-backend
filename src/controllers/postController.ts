@@ -41,10 +41,11 @@ export const deletePost = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
+  const boardId = parseInt(req.params.boardId);
   const postId = parseInt(req.params.postId);
 
   try {
-    await postService.deletePost(postId);
+    await postService.deletePost(boardId, postId);
     res.status(204).end();
   } catch (error) {
     next(error);

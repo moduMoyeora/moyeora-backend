@@ -1,22 +1,13 @@
 import { RowDataPacket } from 'mysql2';
 
-export interface createPostDto {
+export interface CreatePostDto {
   title: string;
   content: string;
+  status: 'draft' | 'published';
 }
 
 export interface TotalCountResult extends RowDataPacket {
   totalCount: number;
-}
-export interface CheckBoardExists extends RowDataPacket {
-  exists: number;
-}
-
-export interface Board extends RowDataPacket {
-  id: number;
-  name: string;
-  description: string;
-  created_at: Date;
 }
 
 export interface Post extends RowDataPacket {
@@ -25,6 +16,7 @@ export interface Post extends RowDataPacket {
   board_id: number;
   title: string;
   content: string;
+  statusId: number;
   created_at: Date;
   updated_at: Date;
 }
