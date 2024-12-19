@@ -1,11 +1,16 @@
-import { createPostDto, Post } from '../types/interface/postInterface';
+import { CreatePostDto, Post } from '../types/interface/postInterface';
 import * as postModel from '../models/postModel';
+import * as boardModel from '../models/boardModel';
+import * as eventModel from '../models/eventModel';
 
 export const createPost = async (
   memberId: number,
   boardId: number,
-  postData: createPostDto
+  postData: CreatePostDto
 ): Promise<Post> => {
+  const board = await boardModel.getBoardById(boardId);
+
+  postData.status = board.is_event_enabled ? 'draft' : 'published';
   const post = await postModel.create(memberId, boardId, postData);
 
   return post;
@@ -14,14 +19,25 @@ export const createPost = async (
 export const updatePost = async (
   memberId: number,
   postId: number,
-  postData: createPostDto
+  postData: CreatePostDto
 ): Promise<Post> => {
   const post = await postModel.update(memberId, postId, postData);
 
   return post;
 };
 
-export const deletePost = async (postId: number): Promise<void> => {
+export const deletePost = async (
+  boardId: number,
+  postId: number
+): Promise<void> => {
+  const board = await boardModel.getBoardById(boardId);
+
+  if (board.is_event_enabled) {
+    const event = await eventModel.findByPostId(postId);
+
+    await eventModel.deleteById(event.id);
+  }
+
   await postModel.deleteById(postId);
 };
 
@@ -33,7 +49,7 @@ export const getPost = async (
 };
 
 export const checkBoard = async (boardId: number): Promise<void> => {
-  await postModel.checkBoardExists(boardId);
+  await boardModel.checkBoardExists(boardId);
 };
 
 export const getPosts = async (

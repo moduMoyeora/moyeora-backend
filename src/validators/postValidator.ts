@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { body, param, query, validationResult } from 'express-validator';
 import { BadRequestError } from '../errors/httpError';
 
-const boardParamValidationRules = () => {
+export const boardParamValidationRules = () => {
   return [
     param('boardId')
       .notEmpty()
@@ -63,10 +63,7 @@ export const getPostsByBoardIdValidationRules = () => {
 };
 
 export const getPostByIdValidationrules = () => {
-  return [
-    ...boardParamValidationRules(),
-    param('postId').isNumeric().withMessage('id는 숫자여야 합니다.').toInt(),
-  ];
+  return [...boardParamValidationRules(), ...postParamValidationRules()];
 };
 
 export const validatePost = (
