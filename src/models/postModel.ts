@@ -1,22 +1,21 @@
 import { ResultSetHeader } from 'mysql2';
 import pool from '../config/db';
 import {
-  createPostDto,
+  CreatePostDto,
   Post,
-  Board,
   TotalCountResult,
-  CheckBoardExists,
 } from '../types/interface/postInterface';
 import { NotFoundError } from '../errors/httpError';
+import { Board } from '../types/interface/boardInterface';
 
 export const create = async (
   memberId: number,
   boardId: number,
-  data: createPostDto
+  data: CreatePostDto
 ): Promise<Post> => {
   const [result] = await pool.query<ResultSetHeader>(
-    'INSERT INTO post (member_id, board_id, title, content) VALUES (?, ?, ?, ?);',
-    [memberId, boardId, data.title, data.content]
+    'INSERT INTO post (member_id, board_id, title, content, status) VALUES (?, ?, ?, ?, ?);',
+    [memberId, boardId, data.title, data.content, data.status]
   );
 
   const [posts] = await pool.query<Post[]>('SELECT * FROM post WHERE id = ?', [
@@ -29,7 +28,7 @@ export const create = async (
 export const update = async (
   memberId: number,
   postId: number,
-  data: createPostDto
+  data: CreatePostDto
 ): Promise<Post> => {
   const [result] = await pool.query<ResultSetHeader>(
     'UPDATE post SET title = ?, content = ? WHERE id = ?',
@@ -81,14 +80,6 @@ export const getPostById = async (
   //return rows.length > 0 ? rows[0] : null;
 };
 
-export const checkBoardExists = async (boardId: number): Promise<void> => {
-  const query = `SELECT 1 FROM board WHERE id = ? LIMIT 1`;
-  const [result] = await pool.query<CheckBoardExists[]>(query, [boardId]);
-  if (result.length === 0) {
-    throw new NotFoundError(`게시판 ID ${boardId}를 찾을 수 없습니다.`);
-  }
-};
-
 export const getPostsByBoardId = async (
   boardId: number,
   limit: number,
@@ -127,4 +118,18 @@ export const getPostsByBoardId = async (
   const totalCount = countResult[0]?.totalCount || 0;
 
   return { posts: result, totalCount };
+};
+
+export const updateStatus = async (
+  postId: number,
+  status: 'draft' | 'published'
+): Promise<void> => {
+  const [result] = await pool.query<ResultSetHeader>(
+    'UPDATE post SET status = ? WHERE id = ?',
+    [status, postId]
+  );
+
+  if (result.affectedRows === 0) {
+    throw new NotFoundError();
+  }
 };
