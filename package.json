@@ -29,7 +29,7 @@
     "typescript-eslint": "^8.17.0"
   },
   "engines": {
-    "node": ">= 14.0.0"
+    "node": "16.x"
   },
   "scripts": {
     "typecheck": "npx tsc --noEmit --skipLibCheck",

@@ -13,9 +13,9 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: 'https://moyeora.netlify.app',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    origin: process.env.FRONTEND_URL,
+    methods: '*',
+    allowedHeaders: '*',
     credentials: true,
   })
 );
