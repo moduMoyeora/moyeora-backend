@@ -19,3 +19,14 @@ export interface check_duplicate {
   field: 'email' | 'nickname';
   value: string;
 }
+
+export interface Profile {
+  nickname: string;
+  name: string;
+  gender: 'M' | 'F';
+  region: string;
+  age: number;
+  description: string;
+}
+
+export interface profileResult extends RowDataPacket, Profile {}
