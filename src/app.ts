@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import userRoute from './routes/userRoute';
 import postRoute from './routes/postRoute';
 import eventRoute from './routes/eventRoute';
+import commentRoute from './routes/commentRoute';
 import { errorHandler } from './middlewares/errorMiddleware';
 import cors from 'cors';
 
@@ -24,6 +25,8 @@ app.use(
 app.use('/users', userRoute);
 app.use('/boards/:boardId/posts', postRoute);
 app.use('/boards/:boardId/posts/:postId/events', eventRoute);
+app.use('/boards/:boardId/posts/:postId/comments', commentRoute);
+
 
 app.use(errorHandler);
 

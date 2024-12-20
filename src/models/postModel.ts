@@ -90,11 +90,8 @@ export const getPostsByBoardId = async (
 }> => {
   const queryPosts = `
         SELECT 
-            post.id, 
-            post.title, 
-            member.nickname AS author, 
-            post.created_at AS time, 
-            post.content
+            post.*,
+            member.nickname
         FROM post
         JOIN member ON post.member_id = member.id
         WHERE post.board_id = ?
@@ -104,7 +101,7 @@ export const getPostsByBoardId = async (
   const [result] = await pool.query<Board[]>(queryPosts, [
     boardId,
     limit,
-    offset,
+    offset
   ]);
 
   const queryCount = `
@@ -113,7 +110,7 @@ export const getPostsByBoardId = async (
         WHERE board_id = ?
     `;
   const [countResult] = await pool.query<TotalCountResult[]>(queryCount, [
-    boardId,
+    boardId
   ]);
   const totalCount = countResult[0]?.totalCount || 0;
 
