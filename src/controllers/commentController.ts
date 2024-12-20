@@ -65,7 +65,6 @@ export const getComment = async (
   const currentPage = Number(req.query.currentPage) || 1;
 
   try {
-
     const { comments, totalCount } = await commentService.getComments(
       postId,
       limit,
@@ -94,4 +93,3 @@ export const getComment = async (
     next(error);
   }
 };
-

@@ -1,6 +1,10 @@
 import { ResultSetHeader } from 'mysql2';
 import pool from '../config/db';
-import { CreateCommentDto,Comment, TotalCountResult } from '../types/interface/commentInterface';
+import {
+  CreateCommentDto,
+  Comment,
+  TotalCountResult,
+} from '../types/interface/commentInterface';
 import { NotFoundError } from '../errors/httpError';
 
 export const create = async (
@@ -25,10 +29,10 @@ export const getByPostId = async (
   postId: number,
   limit: number,
   offset: number
-  ): Promise<{
-    comments: Comment[]; 
-    totalCount: number;
-  }> => {
+): Promise<{
+  comments: Comment[];
+  totalCount: number;
+}> => {
   const [comments] = await pool.query<Comment[]>(
     `SELECT 
             comment.*,
@@ -40,13 +44,13 @@ export const getByPostId = async (
         LIMIT ? OFFSET ?`,
     [postId, limit, offset]
   );
-  
+
   const [countComment] = await pool.query<TotalCountResult[]>(
     `SELECT COUNT(*) AS totalCount 
         FROM comment
-        WHERE post_id = ?`, 
+        WHERE post_id = ?`,
     [postId]
-    );
+  );
   const totalCount = countComment[0]?.totalCount || 0;
 
   return { comments, totalCount };

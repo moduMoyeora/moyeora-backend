@@ -27,7 +27,6 @@ app.use('/boards/:boardId/posts', postRoute);
 app.use('/boards/:boardId/posts/:postId/events', eventRoute);
 app.use('/boards/:boardId/posts/:postId/comments', commentRoute);
 
-
 app.use(errorHandler);
 
 app.listen(PORT, () => {

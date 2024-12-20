@@ -101,7 +101,7 @@ export const getPostsByBoardId = async (
   const [result] = await pool.query<Board[]>(queryPosts, [
     boardId,
     limit,
-    offset
+    offset,
   ]);
 
   const queryCount = `
@@ -110,7 +110,7 @@ export const getPostsByBoardId = async (
         WHERE board_id = ?
     `;
   const [countResult] = await pool.query<TotalCountResult[]>(queryCount, [
-    boardId
+    boardId,
   ]);
   const totalCount = countResult[0]?.totalCount || 0;
 

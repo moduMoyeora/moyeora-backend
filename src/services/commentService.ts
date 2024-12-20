@@ -1,4 +1,4 @@
-import { ForbiddenError } from '../errors/httpError';
+
 import * as commentModel from '../models/commentModel';
 import { CreateCommentDto, Comment } from '../types/interface/commentInterface';
 
@@ -8,7 +8,6 @@ export const createComment = async (
   memberId: number,
   commentData: CreateCommentDto
 ): Promise<Comment> => {
-  
   const comment = await commentModel.create(postId, memberId, commentData);
 
   return comment;
@@ -20,7 +19,7 @@ export const getComments = async (
   currentPage: number
 ) => {
   const offset = limit * (currentPage - 1);
-  const comments =  await commentModel.getByPostId(postId, limit, offset);
+  const comments = await commentModel.getByPostId(postId, limit, offset);
   return comments;
 };
 

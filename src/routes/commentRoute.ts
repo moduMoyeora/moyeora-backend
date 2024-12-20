@@ -14,7 +14,12 @@ import {
 
 const router = express.Router({ mergeParams: true });
 
-router.post('/', createCommentValidationRules(), validateComment, createComment);
+router.post(
+  '/',
+  createCommentValidationRules(),
+  validateComment,
+  createComment
+);
 
 router.get('/', commentParamValidationRules(), validateComment, getComment);
 

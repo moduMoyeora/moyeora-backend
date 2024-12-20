@@ -1,10 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { body, param, validationResult } from 'express-validator';
 import { BadRequestError } from '../errors/httpError';
-import {
-  boardParamValidationRules,
-  postParamValidationRules,
-} from './postValidator';
 
 export const commentParamValidationRules = () => {
   return [
