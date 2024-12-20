@@ -14,17 +14,51 @@ import {
   getPostsByBoardIdValidationRules,
   validatePost,
 } from '../validators/postValidator';
+import {
+  authWithPostId,
+  authOnlyLoggedIn,
+} from '../middlewares/authMiddleware';
 
 const router = express.Router({ mergeParams: true });
 
-router.post('/', createPostValidationRules(), validatePost, createPost);
+router.post(
+  '/',
+  authOnlyLoggedIn,
+  createPostValidationRules(),
+  validatePost,
+  createPost
+);
 
-router.put('/:postId', updatePostValidationRules(), validatePost, updatePost);
+router.put(
+  '/:postId',
+  authWithPostId,
+  updatePostValidationRules(),
+  validatePost,
+  updatePost
+);
 
-router.delete('/:postId', postParamValidationRules(), validatePost, deletePost);
+router.delete(
+  '/:postId',
+  authWithPostId,
+  postParamValidationRules(),
+  validatePost,
+  deletePost
+);
 
-router.get('/:postId', getPostByIdValidationrules(), validatePost, getPost);
+router.get(
+  '/:postId',
+  authOnlyLoggedIn,
+  getPostByIdValidationrules(),
+  validatePost,
+  getPost
+);
 
-router.get('/', getPostsByBoardIdValidationRules(), validatePost, getPosts);
+router.get(
+  '/',
+  authOnlyLoggedIn,
+  getPostsByBoardIdValidationRules(),
+  validatePost,
+  getPosts
+);
 
 export default router;

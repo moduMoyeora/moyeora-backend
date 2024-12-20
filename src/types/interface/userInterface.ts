@@ -15,11 +15,6 @@ export interface LoginResult extends RowDataPacket {
   password: string;
 }
 
-export interface check_duplicate {
-  field: 'email' | 'nickname';
-  value: string;
-}
-
 export interface Profile {
   nickname: string;
   name: string;

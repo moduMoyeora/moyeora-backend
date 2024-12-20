@@ -1,4 +1,4 @@
-import { ResultSetHeader } from 'mysql2';
+import { ResultSetHeader, RowDataPacket } from 'mysql2';
 import pool from '../config/db';
 import {
   createPostDto,
@@ -7,7 +7,7 @@ import {
   TotalCountResult,
   CheckBoardExists,
 } from '../types/interface/postInterface';
-import { NotFoundError } from '../errors/httpError';
+import { InternalServerError, NotFoundError } from '../errors/httpError';
 
 export const create = async (
   memberId: number,
@@ -127,4 +127,15 @@ export const getPostsByBoardId = async (
   const totalCount = countResult[0]?.totalCount || 0;
 
   return { posts: result, totalCount };
+};
+
+export const getMemberByPostId = async (boardId: number): Promise<number> => {
+  try {
+    const query = `SELECT member_id FROM post where id = ?`;
+    const [rows] = await pool.query<RowDataPacket[]>(query, [boardId]);
+    const result = rows[0] as { memberId: number };
+    return result.memberId;
+  } catch {
+    throw new InternalServerError('데이터베이스 접근 중 오류가 발생했습니다.');
+  }
 };
