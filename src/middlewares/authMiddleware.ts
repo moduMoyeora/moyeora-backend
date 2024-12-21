@@ -1,6 +1,7 @@
 import { NextFunction, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import * as postModel from '../models/postModel';
+import * as commentModel from '../models/commentModel';
 import { ForbiddenError, UnauthorizedError } from '../errors/httpError';
 import { JwtRequest, UserPayload } from '../types/interface/userInterface';
 
@@ -97,6 +98,32 @@ export const authOnlyLoggedIn = async (
   const token = req.headers.cookie;
   try {
     const tokenContent = parseAndDecode(token);
+    req.user = tokenContent;
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const authWithCommentId = async (
+  req: JwtRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const token = req.headers.cookie;
+  const commentId = req.params.commentId;
+
+  try {
+    const tokenContent = parseAndDecode(token);
+    const tokenUserId = tokenContent.id;
+
+    const commentAuthorId = await commentModel.getMemberByCommentId(
+      parseInt(commentId)
+    );
+    if (tokenUserId !== commentAuthorId) {
+      throw new ForbiddenError('댓글을 수정/삭제할 권한이 없습니다.');
+    }
+
     req.user = tokenContent;
     next();
   } catch (error) {

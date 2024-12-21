@@ -1,11 +1,11 @@
-import { ResultSetHeader } from 'mysql2';
+import { ResultSetHeader, RowDataPacket } from 'mysql2';
 import pool from '../config/db';
 import {
   CreateCommentDto,
   Comment,
   TotalCountResult,
 } from '../types/interface/commentInterface';
-import { NotFoundError } from '../errors/httpError';
+import { InternalServerError, NotFoundError } from '../errors/httpError';
 
 export const create = async (
   postId: number,
@@ -25,7 +25,7 @@ export const create = async (
   return comments[0];
 };
 
-export const getByPostId = async (
+export const getByCommentId = async (
   postId: number,
   limit: number,
   offset: number
@@ -86,5 +86,18 @@ export const deleteById = async (commentId: number): Promise<void> => {
 
   if (result.affectedRows === 0) {
     throw new NotFoundError();
+  }
+};
+
+export const getMemberByCommentId = async (
+  CommentId: number
+): Promise<number> => {
+  try {
+    const query = `SELECT member_id FROM comment where id = ?`;
+    const [rows] = await pool.query<RowDataPacket[]>(query, [CommentId]);
+    const result = rows[0] as { member_id: number };
+    return result.member_id;
+  } catch {
+    throw new InternalServerError('데이터베이스 접근 중 오류가 발생했습니다');
   }
 };

@@ -1,19 +1,22 @@
 import { NextFunction, Request, Response } from 'express';
+import { JwtRequest } from '../types/interface/userInterface';
 import * as commentService from '../services/commentService';
+import { ForbiddenError } from '../errors/httpError';
 
 export const createComment = async (
-  req: Request,
+  req: JwtRequest,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  try {
-    //const boardId = Number(req.params.boardId);
-    const postId = Number(req.params.postId);
-    const memberId = 1;
-    const commentData = req.body;
+  const postId = Number(req.params.postId);
+  const commentData = req.body;
+  const memberId = req.user?.id;
 
+  if (!memberId) {
+    throw new ForbiddenError();
+  }
+  try {
     const comment = await commentService.createComment(
-      //boardId,
       postId,
       memberId,
       commentData
@@ -25,7 +28,7 @@ export const createComment = async (
 };
 
 export const updateComment = async (
-  req: Request,
+  req: JwtRequest,
   res: Response,
   next: NextFunction
 ) => {
