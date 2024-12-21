@@ -1,4 +1,3 @@
-
 import * as commentModel from '../models/commentModel';
 import { CreateCommentDto, Comment } from '../types/interface/commentInterface';
 
