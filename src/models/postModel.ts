@@ -89,14 +89,11 @@ export const getPostsByBoardId = async (
 }> => {
   const queryPosts = `
         SELECT 
-            post.id, 
-            post.title, 
-            member.nickname AS author, 
-            post.created_at AS time, 
-            post.content
+            post.*,
+            member.nickname
         FROM post
         JOIN member ON post.member_id = member.id
-        WHERE post.board_id = ?
+        WHERE post.board_id = ? AND post.status = 'published'
         ORDER BY post.created_at DESC
         LIMIT ? OFFSET ?
     `;
