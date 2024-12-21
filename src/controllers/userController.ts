@@ -4,6 +4,9 @@ import { Profile } from '../types/interface/userInterface';
 import { NotFoundError, UnauthorizedError } from '../errors/httpError';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export const joinUser = async (
   req: Request,
@@ -74,6 +77,7 @@ export const loginUser = async (
 
     res.cookie('Authorization', token, {
       httpOnly: false,
+      domain: process.env.FRONTEND_URL,
     });
 
     res.status(200).json({ message: '로그인 성공' });
