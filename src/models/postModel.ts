@@ -94,7 +94,7 @@ export const getPostsByBoardId = async (
             member.nickname
         FROM post
         JOIN member ON post.member_id = member.id
-        WHERE post.board_id = ?
+        WHERE post.board_id = ? AND post.status = 'published'
         ORDER BY post.created_at DESC
         LIMIT ? OFFSET ?
     `;
