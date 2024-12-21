@@ -1,3 +1,5 @@
+import { Request } from 'express';
+import { JwtPayload } from 'jsonwebtoken';
 import { RowDataPacket } from 'mysql2';
 
 export interface User extends RowDataPacket {
@@ -15,11 +17,6 @@ export interface LoginResult extends RowDataPacket {
   password: string;
 }
 
-export interface check_duplicate {
-  field: 'email' | 'nickname';
-  value: string;
-}
-
 export interface Profile {
   nickname: string;
   name: string;
@@ -30,3 +27,11 @@ export interface Profile {
 }
 
 export interface profileResult extends RowDataPacket, Profile {}
+
+export interface UserPayload extends JwtPayload {
+  id: number;
+}
+
+export interface JwtRequest extends Request {
+  user?: UserPayload;
+}

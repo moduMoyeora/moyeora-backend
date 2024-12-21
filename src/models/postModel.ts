@@ -1,12 +1,12 @@
-import { ResultSetHeader } from 'mysql2';
+import { ResultSetHeader, RowDataPacket } from 'mysql2';
 import pool from '../config/db';
 import {
   CreatePostDto,
   Post,
   TotalCountResult,
 } from '../types/interface/postInterface';
-import { NotFoundError } from '../errors/httpError';
 import { Board } from '../types/interface/boardInterface';
+import { InternalServerError, NotFoundError } from '../errors/httpError';
 
 export const create = async (
   memberId: number,
@@ -26,13 +26,12 @@ export const create = async (
 };
 
 export const update = async (
-  memberId: number,
   postId: number,
   data: CreatePostDto
 ): Promise<Post> => {
   const [result] = await pool.query<ResultSetHeader>(
     'UPDATE post SET title = ?, content = ? WHERE id = ?',
-    [data.title, data.content, postId, memberId]
+    [data.title, data.content, postId]
   );
 
   if (result.affectedRows === 0) {
@@ -131,5 +130,16 @@ export const updateStatus = async (
 
   if (result.affectedRows === 0) {
     throw new NotFoundError();
+  }
+};
+
+export const getMemberByPostId = async (boardId: number): Promise<number> => {
+  try {
+    const query = `SELECT member_id FROM post where id = ?`;
+    const [rows] = await pool.query<RowDataPacket[]>(query, [boardId]);
+    const result = rows[0] as { memberId: number };
+    return result.memberId;
+  } catch {
+    throw new InternalServerError('데이터베이스 접근 중 오류가 발생했습니다.');
   }
 };

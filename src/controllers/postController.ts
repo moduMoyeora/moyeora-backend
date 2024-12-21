@@ -1,15 +1,21 @@
 import { NextFunction, Request, Response } from 'express';
 import * as postService from '../services/postService';
 import { StatusCodes } from 'http-status-codes';
+import { JwtRequest } from '../types/interface/userInterface';
+import { ForbiddenError } from '../errors/httpError';
 
 export const createPost = async (
-  req: Request,
+  req: JwtRequest,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   const boardId = parseInt(req.params.boardId);
   const postData = req.body;
-  const memberId = 1;
+  const memberId = req.user?.id;
+
+  if (!memberId) {
+    throw new ForbiddenError();
+  }
 
   try {
     const post = await postService.createPost(memberId, boardId, postData);
@@ -20,16 +26,15 @@ export const createPost = async (
 };
 
 export const updatePost = async (
-  req: Request,
+  req: JwtRequest,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   const postId = parseInt(req.params.postId);
   const postData = req.body;
-  const memberId = 1;
 
   try {
-    const post = await postService.updatePost(memberId, postId, postData);
+    const post = await postService.updatePost(postId, postData);
     res.status(200).json(post);
   } catch (error) {
     next(error);
