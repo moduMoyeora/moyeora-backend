@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { body, param, validationResult } from 'express-validator';
+import { body, query, param, validationResult } from 'express-validator';
 import { BadRequestError } from '../errors/httpError';
 
 export const joinUserValidationRules = () => {
@@ -20,12 +20,12 @@ export const joinUserValidationRules = () => {
 
 export const checkDuplicateRules = () => {
   return [
-    body('field')
+    query('field')
       .isIn(['email', 'nickname'])
       .withMessage('field는 "email" 또는 "nickname"이어야 합니다')
       .notEmpty()
       .withMessage('중복을 확인할 필드는 필수입니다'),
-    body('value').notEmpty().withMessage('중복을 확인할 데이터는 필수입니다'),
+    query('value').notEmpty().withMessage('중복을 확인할 데이터는 필수입니다'),
   ];
 };
 
@@ -42,13 +42,13 @@ export const loginUserValidationRules = () => {
 
 export const viewProfileRules = () => {
   return [
-    param('userId').notEmpty().withMessage('조회할 사용자 ID를 입력해주세요'),
+    param('memberId').notEmpty().withMessage('조회할 사용자 ID를 입력해주세요'),
   ];
 };
 
 export const editProfileRules = () => {
   return [
-    param('userId').notEmpty().withMessage('수정할 사용자 ID를 입력해주세요'),
+    param('memberId').notEmpty().withMessage('수정할 사용자 ID를 입력해주세요'),
     body('nickname')
       .notEmpty()
       .withMessage('닉네임을 입력해주세요')

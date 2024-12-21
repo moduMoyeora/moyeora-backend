@@ -17,11 +17,10 @@ export const createPost = async (
 };
 
 export const updatePost = async (
-  memberId: number,
   postId: number,
   postData: CreatePostDto
 ): Promise<Post> => {
-  const post = await postModel.update(memberId, postId, postData);
+  const post = await postModel.update(postId, postData);
 
   return post;
 };

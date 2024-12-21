@@ -4,6 +4,9 @@ import { Profile } from '../types/interface/userInterface';
 import { NotFoundError, UnauthorizedError } from '../errors/httpError';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export const joinUser = async (
   req: Request,
@@ -27,9 +30,11 @@ export const checkDuplicate = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { field, value } = req.body;
+  const { field, value } = req.query;
   try {
-    const isDuplicate = await userModel.checkDuplicate(field, value);
+    const fieldVal = field as 'email' | 'nickname';
+    const valueVal = value as string;
+    const isDuplicate = await userModel.checkDuplicate(fieldVal, valueVal);
 
     res.status(200).json({ isDuplicate: isDuplicate });
   } catch (error) {
@@ -62,17 +67,17 @@ export const loginUser = async (
     const token = jwt.sign(
       {
         id: user.id,
-        nickName: user.nickname,
       },
       privateKey,
       {
-        expiresIn: '1000000000m',
+        expiresIn: '1h',
         issuer: 'moyeora-server',
       }
     );
 
     res.cookie('Authorization', token, {
       httpOnly: false,
+      domain: process.env.FRONTEND_DOMAIN,
     });
 
     res.status(200).json({ message: '로그인 성공' });
@@ -86,9 +91,9 @@ export const viewProfile = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { userId } = req.params;
+  const { memberId } = req.params;
   try {
-    const response = await userModel.viewProfile(parseInt(userId));
+    const response = await userModel.viewProfile(parseInt(memberId));
     if (response === null) {
       throw new NotFoundError('해당 사용자를 찾을 수 없습니다');
     }
@@ -104,7 +109,7 @@ export const editProfile = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { userId } = req.params;
+  const { memberId } = req.params;
   const { nickname, name, gender, region, age, description }: Profile =
     req.body;
   const updateData: Profile = {
@@ -116,7 +121,7 @@ export const editProfile = async (
     description,
   };
   try {
-    await userModel.editProfile(parseInt(userId), updateData);
+    await userModel.editProfile(parseInt(memberId), updateData);
     res.status(200).json({ message: '프로필 업데이트 완료' });
   } catch (error) {
     next(error);
