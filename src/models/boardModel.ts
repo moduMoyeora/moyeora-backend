@@ -18,3 +18,16 @@ export const getBoardById = async (boardId: number): Promise<Board> => {
 
   return board[0];
 };
+
+export type BoardSummary = Pick<Board, 'id' | 'name'>;
+export const findAllBoards = async (
+  limit: number,
+  offset: number
+): Promise<BoardSummary[]> => {
+  const [boards] = await pool.query<Board[]>(
+    `SELECT board.id, board.name FROM board ORDER BY id LIMIT ? OFFSET ?`,
+    [limit, offset]
+  );
+
+  return boards;
+};
