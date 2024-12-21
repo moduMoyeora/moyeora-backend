@@ -84,7 +84,7 @@ export const sendEmail = async (
 ) => {
   const boardId = Number(req.params.boardId);
   const postId = Number(req.params.postId);
-  const commentId = Number(req.params.commentId);
+  const commentId = Number(req.body.commentId);
 
   const mailTemplateSource = fs.readFileSync(
     './src/templates/mailTemplate.html',
@@ -104,11 +104,13 @@ export const sendEmail = async (
     const post = await postModel.getPostById(boardId, postId);
     const subject = post.title;
 
+    const eventLink = `${process.env.FRONTEND_URL}/boards/${boardId}/posts/${postId}`;
+
     const data = {
       eventTitle: `${subject} 안내`,
       location: event.location,
       eventTime: formatDateTime(event.event_time).formattedDateAndTime,
-      eventLink: 'https://example.com',
+      eventLink: eventLink,
     };
     const htmlContent = mailTemplate(data);
     const mailOptions = {

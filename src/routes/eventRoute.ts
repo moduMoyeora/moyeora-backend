@@ -2,6 +2,7 @@ import express from 'express';
 import {
   createEventValidationRules,
   eventParamValidationRules,
+  sendEmailValidationRules,
   updateEventValidationRules,
   validateEvent,
 } from '../validators/eventValidator';
@@ -47,7 +48,5 @@ router.delete(
   validateEvent,
   deleteEvent
 );
-
-router.get('/email/:commentId', sendEmail);
 
 export default router;
