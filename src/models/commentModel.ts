@@ -36,7 +36,8 @@ export const getByPostId = async (
   const [comments] = await pool.query<Comment[]>(
     `SELECT 
             comment.*,
-            member.nickname
+            member.nickname,
+            member.email
         FROM comment
         JOIN member ON comment.member_id = member.id
         WHERE comment.post_id = ?
