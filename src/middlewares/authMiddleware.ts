@@ -8,20 +8,18 @@ const isUserPayload = (decoded: jwt.JwtPayload): decoded is UserPayload => {
   return 'id' in decoded && typeof decoded.id === 'number';
 };
 
-const parseAndDecode = (cookieHeader: string | undefined): UserPayload => {
-  if (!cookieHeader) throw new UnauthorizedError('헤더에 쿠키가 없습니다');
+const parseAndDecode = (
+  authorization: string | string[] | undefined
+): UserPayload => {
+  if (!authorization) {
+    throw new UnauthorizedError('헤더에 값이 비어져있습니다.');
+  }
 
-  const cookies = cookieHeader
-    .split(';')
-    .reduce((acc: Record<string, string>, cookie) => {
-      const [key, value] = cookie.split('=').map((part) => part.trim());
-      if (key && value) {
-        acc[key] = decodeURIComponent(value);
-      }
-      return acc;
-    }, {});
+  if (Array.isArray(authorization) || !authorization.startsWith('Bearer ')) {
+    throw new UnauthorizedError('올바른 헤더값이 아닙니다.');
+  }
 
-  const token = cookies['Authorization'];
+  const token = authorization.slice(7);
   const decoded = jwt.decode(token);
 
   if (!decoded) {
@@ -48,7 +46,8 @@ export const authWithMemberId = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const token = req.headers.cookie;
+  const token = req.headers['authorization'];
+  console.log(token);
   try {
     const tokenContent = parseAndDecode(token);
     if (!tokenContent || !tokenContent.id) {
@@ -70,7 +69,8 @@ export const authWithPostId = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const token = req.headers.cookie;
+  const token = req.headers['authorization'];
+  console.log(token);
   const postId = req.params.postId;
   try {
     const tokenContent = parseAndDecode(token);
@@ -94,7 +94,8 @@ export const authOnlyLoggedIn = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const token = req.headers.cookie;
+  const token = req.headers['authorization'];
+  console.log(token);
   try {
     const tokenContent = parseAndDecode(token);
     req.user = tokenContent;
