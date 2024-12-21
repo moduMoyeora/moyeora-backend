@@ -104,7 +104,7 @@ export const sendEmail = async (
     const post = await postModel.getPostById(boardId, postId);
     const subject = post.title;
 
-    const eventLink = `${process.env.FRONT_HOST}/boards/${boardId}/posts/${postId}`;
+    const eventLink = `${process.env.FRONTEND_URL}/boards/${boardId}/posts/${postId}`;
 
     const data = {
       eventTitle: `${subject} 안내`,
