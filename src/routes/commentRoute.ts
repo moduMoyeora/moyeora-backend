@@ -12,8 +12,8 @@ import {
   updateComment,
 } from '../controllers/commentController';
 import {
-  authOnlyLoggedIn,
   authWithCommentId,
+  authOnlyLoggedIn,
 } from '../middlewares/authMiddleware';
 
 const router = express.Router({ mergeParams: true });
@@ -36,7 +36,7 @@ router.get(
 
 router.put(
   '/:commentId',
-  authOnlyLoggedIn,
+  authWithCommentId,
   updateCommentValidationRules(),
   validateComment,
   updateComment

@@ -5,6 +5,8 @@ import postRoute from './routes/postRoute';
 import eventRoute from './routes/eventRoute';
 import commentRoute from './routes/commentRoute';
 import mailRoute from './routes/mailRoute';
+import boardRoute from './routes/boardRoute';
+import { errorHandler } from './middlewares/errorMiddleware';
 import cors from 'cors';
 
 dotenv.config();
@@ -23,6 +25,7 @@ app.use(
 );
 
 app.use('/users', userRoute);
+app.use('/boards', boardRoute);
 app.use('/boards/:boardId/posts', postRoute);
 app.use('/boards/:boardId/posts/:postId/events', eventRoute);
 app.use('/boards/:boardId/posts/:postId/comments', commentRoute);

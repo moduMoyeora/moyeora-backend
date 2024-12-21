@@ -18,7 +18,7 @@ export const getComments = async (
   currentPage: number
 ) => {
   const offset = limit * (currentPage - 1);
-  const comments = await commentModel.getByPostId(postId, limit, offset);
+  const comments = await commentModel.getByCommentId(postId, limit, offset);
   return comments;
 };
 

@@ -1,6 +1,7 @@
 import { NextFunction, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import * as postModel from '../models/postModel';
+import * as commentModel from '../models/commentModel';
 import { ForbiddenError, UnauthorizedError } from '../errors/httpError';
 import { JwtRequest, UserPayload } from '../types/interface/userInterface';
 
@@ -107,17 +108,22 @@ export const authWithCommentId = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const token = req.headers['authorization'];
+  const token = req.headers.cookie;
+  const commentId = req.params.commentId;
+
   try {
     const tokenContent = parseAndDecode(token);
-    if (!tokenContent || !tokenContent.id) {
-      throw new UnauthorizedError('토큰에 유효한 사용자 정보가 없습니다');
-    }
     const tokenUserId = tokenContent.id;
-    const requestedUserId = Number(req.params.commentId);
-    if (tokenUserId != requestedUserId) {
-      throw new ForbiddenError('이 작업을 수행할 권한이 없습니다');
+
+    const commentAuthorId = await commentModel.getMemberByCommentId(
+      parseInt(commentId)
+    );
+    if (tokenUserId !== commentAuthorId) {
+      throw new ForbiddenError('댓글을 수정/삭제할 권한이 없습니다.');
     }
+
+    req.user = tokenContent;
+    next();
   } catch (error) {
     next(error);
   }
