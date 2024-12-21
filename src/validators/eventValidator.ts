@@ -51,6 +51,18 @@ export const updateEventValidationRules = () => {
   ];
 };
 
+export const sendEmailValidationRules = () => {
+  return [
+    ...boardParamValidationRules(),
+    ...postParamValidationRules(),
+    body('commentId')
+      .notEmpty()
+      .withMessage('댓글 아이디는 필수입니다.')
+      .isInt()
+      .withMessage('댓글 아이디는 정수입니다.'),
+  ];
+};
+
 export const validateEvent = (
   req: Request,
   res: Response,

@@ -11,20 +11,32 @@ import {
   getComment,
   updateComment,
 } from '../controllers/commentController';
+import {
+  authOnlyLoggedIn,
+  authWithCommentId,
+} from '../middlewares/authMiddleware';
 
 const router = express.Router({ mergeParams: true });
 
 router.post(
   '/',
+  authOnlyLoggedIn,
   createCommentValidationRules(),
   validateComment,
   createComment
 );
 
-router.get('/', commentParamValidationRules(), validateComment, getComment);
+router.get(
+  '/',
+  authOnlyLoggedIn,
+  commentParamValidationRules(),
+  validateComment,
+  getComment
+);
 
 router.put(
   '/:commentId',
+  authOnlyLoggedIn,
   updateCommentValidationRules(),
   validateComment,
   updateComment
@@ -32,6 +44,7 @@ router.put(
 
 router.delete(
   '/:commentId',
+  authWithCommentId,
   commentParamValidationRules(),
   validateComment,
   deleteComment

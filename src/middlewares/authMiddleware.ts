@@ -47,7 +47,6 @@ export const authWithMemberId = async (
   next: NextFunction
 ): Promise<void> => {
   const token = req.headers['authorization'];
-  console.log(token);
   try {
     const tokenContent = parseAndDecode(token);
     if (!tokenContent || !tokenContent.id) {
@@ -70,7 +69,6 @@ export const authWithPostId = async (
   next: NextFunction
 ): Promise<void> => {
   const token = req.headers['authorization'];
-  console.log(token);
   const postId = req.params.postId;
   try {
     const tokenContent = parseAndDecode(token);
@@ -95,11 +93,31 @@ export const authOnlyLoggedIn = async (
   next: NextFunction
 ): Promise<void> => {
   const token = req.headers['authorization'];
-  console.log(token);
   try {
     const tokenContent = parseAndDecode(token);
     req.user = tokenContent;
     next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const authWithCommentId = async (
+  req: JwtRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const token = req.headers['authorization'];
+  try {
+    const tokenContent = parseAndDecode(token);
+    if (!tokenContent || !tokenContent.id) {
+      throw new UnauthorizedError('토큰에 유효한 사용자 정보가 없습니다');
+    }
+    const tokenUserId = tokenContent.id;
+    const requestedUserId = Number(req.params.commentId);
+    if (tokenUserId != requestedUserId) {
+      throw new ForbiddenError('이 작업을 수행할 권한이 없습니다');
+    }
   } catch (error) {
     next(error);
   }
