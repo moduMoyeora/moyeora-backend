@@ -9,6 +9,7 @@ import {
   createEvent,
   deleteEvent,
   getEvent,
+  sendEmail,
   updateEvent,
 } from '../controllers/eventController';
 import { authWithPostId } from '../middlewares/authMiddleware';
@@ -46,5 +47,7 @@ router.delete(
   validateEvent,
   deleteEvent
 );
+
+router.get('/email/:commentId', sendEmail);
 
 export default router;

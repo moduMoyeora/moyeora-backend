@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{eventTitle}}</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f7fc;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      color: #333333;
+      text-align: center;
+    }
+    p {
+      color: #555555;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+    .info {
+      background-color: #f9f9f9;
+      border-left: 5px solid #4CAF50;
+      padding: 10px;
+      margin-bottom: 20px;
+    }
+    .button {
+      display: inline-block;
+      background-color: #4CAF50;
+      color: #ffffff;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 5px;
+      text-align: center;
+      font-weight: bold;
+    }
+    .footer {
+      text-align: center;
+      font-size: 14px;
+      color: #888888;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>{{eventTitle}}</h1>
+    <p>안녕하세요!! 모여라 서비스에서 알려드립니다.</p>
+
+    <div class="info">
+      <p><strong>모임 장소:</strong> {{location}}</p>
+      <p><strong>모임 시간:</strong> {{eventTime}}</p>
+      <p><strong>자세한 정보: </strong> <a href="{{eventLink}}" class="button">링크 열기</a></p>
+    </div>
+
+    <p>위 정보에 따라 참석해 주세요.</p>
+
+    <div class="footer">
+      <p>감사합니다.<br>Moyeora 팀</p>
+    </div>
+  </div>
+</body>
+</html>

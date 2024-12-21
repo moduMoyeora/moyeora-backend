@@ -1,4 +1,4 @@
-import { ResultSetHeader } from 'mysql2';
+import { ResultSetHeader, RowDataPacket } from 'mysql2';
 import pool from '../config/db';
 import { CreateEventDto } from '../types/interface/eventInterface';
 import { Event } from '../types/interface/eventInterface';
@@ -77,4 +77,15 @@ export const deleteById = async (eventId: number): Promise<void> => {
   if (result.affectedRows === 0) {
     throw new NotFoundError();
   }
+};
+
+export const findUserByCommentId = async (
+  commentId: number
+): Promise<number> => {
+  const [rows] = await pool.query<RowDataPacket[]>(
+    'SELECT member_id FROM comment WHERE id = ?',
+    [commentId]
+  );
+  const result = rows[0] as { member_id: number };
+  return result.member_id;
 };

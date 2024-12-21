@@ -11,3 +11,10 @@ export interface Event extends RowDataPacket {
   location: string;
   event_time: string;
 }
+
+export interface EmailRequestBody {
+  to: string;
+  subject: string;
+  text?: string;
+  html?: string;
+}
