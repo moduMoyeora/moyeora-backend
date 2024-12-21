@@ -76,13 +76,13 @@ export const loginUser = async (
     );
 
     res.cookie('Authorization', token, {
-      httpOnly: false,
+      httpOnly: true,
       sameSite: 'none',
       secure: true,
-      domain: process.env.FRONTEND_DOMAIN,
+      // domain: process.env.FRONTEND_DOMAIN,
     });
 
-    res.status(200).json({ message: '로그인 성공' });
+    res.status(200).json({ message: '로그인 성공', id: user.id });
   } catch (error) {
     next(error);
   }
