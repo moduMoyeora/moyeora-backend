@@ -130,13 +130,13 @@ export const updateStatus = async (
   }
 };
 
-export const getMemberByPostId = async (boardId: number): Promise<number> => {
+export const getMemberByPostId = async (postId: number): Promise<number> => {
   try {
     const query = `SELECT member_id FROM post where id = ?`;
-    const [rows] = await pool.query<RowDataPacket[]>(query, [boardId]);
-    const result = rows[0] as { memberId: number };
-    return result.memberId;
+    const [rows] = await pool.query<RowDataPacket[]>(query, [postId]);
+    const result = rows[0] as { member_id: number };
+    return result.member_id;
   } catch {
-    throw new InternalServerError('데이터베이스 접근 중 오류가 발생했습니다.');
+    throw new InternalServerError('데이터베이스 접근 중 오류가 발생했습니다');
   }
 };

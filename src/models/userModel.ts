@@ -79,13 +79,40 @@ export const viewProfile = async (
   }
 };
 
-export const editProfile = async (userId: number, updateData: Profile) => {
+export const editProfile = async (
+  userId: number,
+  updateData: Profile
+): Promise<void> => {
   try {
     const query = `UPDATE member
     SET nickname = ?, name = ?, gender = ?, region = ?, age = ?, description = ?
     WHERE id = ?`;
     const values = [...Object.values(updateData), userId];
     await pool.query<ResultSetHeader>(query, values);
+  } catch {
+    throw new InternalServerError('데이터베이스 접근 중 오류가 발생했습니다.');
+  }
+};
+
+export const getEmailByMemberId = async (memberId: number): Promise<string> => {
+  try {
+    const query = `SELECT email FROM member where id = ?`;
+    const [rows] = await pool.query<RowDataPacket[]>(query, [memberId]);
+    const result = rows[0] as { email: string };
+    return result.email;
+  } catch {
+    throw new InternalServerError('데이터베이스 접근 중 오류가 발생했습니다.');
+  }
+};
+
+export const getNicknameByMemberId = async (
+  memberId: number
+): Promise<string> => {
+  try {
+    const query = `SELECT nickname FROM member where id = ?`;
+    const [rows] = await pool.query<RowDataPacket[]>(query, [memberId]);
+    const result = rows[0] as { nickname: string };
+    return result.nickname;
   } catch {
     throw new InternalServerError('데이터베이스 접근 중 오류가 발생했습니다.');
   }

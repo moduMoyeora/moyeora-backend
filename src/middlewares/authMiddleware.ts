@@ -22,9 +22,6 @@ const parseAndDecode = (cookieHeader: string | undefined): UserPayload => {
     }, {});
 
   const token = cookies['Authorization'];
-  if (!token)
-    throw new UnauthorizedError('지정된 authorization 쿠키가 없습니다');
-
   const decoded = jwt.decode(token);
 
   if (!decoded) {
