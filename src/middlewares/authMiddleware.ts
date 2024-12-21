@@ -47,7 +47,6 @@ export const authWithMemberId = async (
   next: NextFunction
 ): Promise<void> => {
   const token = req.headers['authorization'];
-  console.log(token);
   try {
     const tokenContent = parseAndDecode(token);
     if (!tokenContent || !tokenContent.id) {
@@ -70,7 +69,6 @@ export const authWithPostId = async (
   next: NextFunction
 ): Promise<void> => {
   const token = req.headers['authorization'];
-  console.log(token);
   const postId = req.params.postId;
   try {
     const tokenContent = parseAndDecode(token);
@@ -95,7 +93,6 @@ export const authOnlyLoggedIn = async (
   next: NextFunction
 ): Promise<void> => {
   const token = req.headers['authorization'];
-  console.log(token);
   try {
     const tokenContent = parseAndDecode(token);
     req.user = tokenContent;
