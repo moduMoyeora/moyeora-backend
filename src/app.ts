@@ -6,7 +6,6 @@ import eventRoute from './routes/eventRoute';
 import commentRoute from './routes/commentRoute';
 import mailRoute from './routes/mailRoute';
 import boardRoute from './routes/boardRoute';
-import { errorHandler } from './middlewares/errorMiddleware';
 import cors from 'cors';
 
 dotenv.config();
@@ -30,7 +29,6 @@ app.use('/boards/:boardId/posts', postRoute);
 app.use('/boards/:boardId/posts/:postId/events', eventRoute);
 app.use('/boards/:boardId/posts/:postId/comments', commentRoute);
 app.use('/email/boards/:boardId/posts/:postId', mailRoute);
-
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

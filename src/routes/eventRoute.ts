@@ -2,7 +2,6 @@ import express from 'express';
 import {
   createEventValidationRules,
   eventParamValidationRules,
-  sendEmailValidationRules,
   updateEventValidationRules,
   validateEvent,
 } from '../validators/eventValidator';
@@ -10,7 +9,6 @@ import {
   createEvent,
   deleteEvent,
   getEvent,
-  sendEmail,
   updateEvent,
 } from '../controllers/eventController';
 import { authWithPostId } from '../middlewares/authMiddleware';
