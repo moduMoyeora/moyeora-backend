@@ -77,8 +77,8 @@ export const loginUser = async (
 
     res.cookie('Authorization', token, {
       httpOnly: false,
-      sameSite: 'none',
       secure: true,
+      sameSite: 'none',
       domain: process.env.FRONTEND_DOMAIN,
     });
 
