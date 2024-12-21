@@ -77,7 +77,7 @@ export const loginUser = async (
 
     res.cookie('Authorization', token, {
       httpOnly: false,
-      domain: process.env.FRONTEND_URL,
+      domain: process.env.FRONTEND_DOMAIN,
     });
 
     res.status(200).json({ message: '로그인 성공' });
