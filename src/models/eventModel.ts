@@ -21,39 +21,22 @@ export const create = async (
   return events[0];
 };
 
-export const findById = async (eventId: number): Promise<Event> => {
-  const [events] = await pool.query<Event[]>(
-    'SELECT * FROM event WHERE id = ? LIMIT 1',
-    [eventId]
-  );
-
-  if (events.length === 0) {
-    throw new NotFoundError();
-  }
-
-  return events[0];
-};
-
 export const findByPostId = async (postId: number): Promise<Event> => {
   const [events] = await pool.query<Event[]>(
     'SELECT * FROM event WHERE post_id = ? LIMIT 1',
     [postId]
   );
 
-  if (events.length === 0) {
-    throw new NotFoundError();
-  }
-
   return events[0];
 };
 
-export const update = async (
-  eventId: number,
+export const updateByPostId = async (
+  postId: number,
   data: CreateEventDto
 ): Promise<Event> => {
   const [result] = await pool.query<ResultSetHeader>(
-    'UPDATE event SET location = ?, event_time = ? WHERE id = ?',
-    [data.location, new Date(data.time), eventId]
+    'UPDATE event SET location = ?, event_time = ? WHERE post_id = ?',
+    [data.location, new Date(data.time), postId]
   );
 
   if (result.affectedRows === 0) {
@@ -61,17 +44,17 @@ export const update = async (
   }
 
   const [events] = await pool.query<Event[]>(
-    'SELECT * FROM event WHERE id = ?',
-    [eventId]
+    'SELECT * FROM event WHERE post_id = ?',
+    [postId]
   );
 
   return events[0];
 };
 
-export const deleteById = async (eventId: number): Promise<void> => {
+export const deleteByPostId = async (postId: number): Promise<void> => {
   const [result] = await pool.query<ResultSetHeader>(
-    'DELETE FROM event WHERE id = ?',
-    [eventId]
+    'DELETE FROM event WHERE post_id = ?',
+    [postId]
   );
 
   if (result.affectedRows === 0) {

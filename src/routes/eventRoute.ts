@@ -1,8 +1,6 @@
 import express from 'express';
 import {
   createEventValidationRules,
-  eventParamValidationRules,
-  updateEventValidationRules,
   validateEvent,
 } from '../validators/eventValidator';
 import {
@@ -12,6 +10,7 @@ import {
   updateEvent,
 } from '../controllers/eventController';
 import { authWithPostId } from '../middlewares/authMiddleware';
+import { postParamValidationRules } from '../validators/postValidator';
 
 const router = express.Router({ mergeParams: true });
 
@@ -24,25 +23,25 @@ router.post(
 );
 
 router.get(
-  '/:eventId',
+  '/',
   authWithPostId,
-  eventParamValidationRules(),
+  postParamValidationRules(),
   validateEvent,
   getEvent
 );
 
 router.put(
-  '/:eventId',
+  '/',
   authWithPostId,
-  updateEventValidationRules(),
+  postParamValidationRules(),
   validateEvent,
   updateEvent
 );
 
 router.delete(
-  '/:eventId',
+  '/',
   authWithPostId,
-  eventParamValidationRules(),
+  postParamValidationRules(),
   validateEvent,
   deleteEvent
 );

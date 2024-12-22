@@ -33,8 +33,9 @@ export const deletePost = async (
 
   if (board.is_event_enabled) {
     const event = await eventModel.findByPostId(postId);
-
-    await eventModel.deleteById(event.id);
+    if (event) {
+      await eventModel.deleteByPostId(postId);
+    }
   }
 
   await postModel.deleteById(postId);

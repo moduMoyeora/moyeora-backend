@@ -30,11 +30,11 @@ export const updateEvent = async (
   res: Response,
   next: NextFunction
 ) => {
-  const eventId = Number(req.params.eventId);
+  const postId = Number(req.params.postId);
   const eventData = req.body;
 
   try {
-    const event = await eventService.updateEvent(eventId, eventData);
+    const event = await eventService.updateEvent(postId, eventData);
     res.status(200).json(event);
   } catch (error) {
     next(error);
@@ -46,10 +46,10 @@ export const deleteEvent = async (
   res: Response,
   next: NextFunction
 ) => {
-  const eventId = Number(req.params.eventId);
+  const postId = Number(req.params.postId);
 
   try {
-    await eventService.deleteEvent(eventId);
+    await eventService.deleteEvent(postId);
     res.status(204).end();
   } catch (error) {
     next(error);
@@ -61,10 +61,10 @@ export const getEvent = async (
   res: Response,
   next: NextFunction
 ) => {
-  const eventId = Number(req.params.eventId);
+  const postId = Number(req.params.postId);
 
   try {
-    const event = await eventService.getEvent(eventId);
+    const event = await eventService.getEvent(postId);
     res.status(200).json(event);
   } catch (error) {
     next(error);
