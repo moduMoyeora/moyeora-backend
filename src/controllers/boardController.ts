@@ -6,8 +6,8 @@ export const getBoards = async (
   res: Response,
   next: NextFunction
 ) => {
-  const limit = Number(req.query.limit);
-  const currentPage = Number(req.query.currentPage);
+  const limit = Number(req.query.limit) || 4;
+  const currentPage = Number(req.query.currentPage) || 1;
   try {
     const boards = await boardService.getBoards(limit, currentPage);
     res.status(200).json(boards);
