@@ -69,7 +69,7 @@ export const getPostById = async (
         FROM post
         JOIN member ON post.member_id = member.id
         JOIN board ON post.board_id = board.id
-        WHERE post.id = ? AND post.board_id = ?
+        WHERE post.id = ? AND post.board_id = ? AND post.status = 'published'
     `;
   const [result] = await pool.query<Post[]>(sql, [postId, boardId]);
   if (result.length === 0) {

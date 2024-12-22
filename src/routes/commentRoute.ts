@@ -26,13 +26,7 @@ router.post(
   createComment
 );
 
-router.get(
-  '/',
-  authOnlyLoggedIn,
-  commentParamValidationRules(),
-  validateComment,
-  getComment
-);
+router.get('/', commentParamValidationRules(), validateComment, getComment);
 
 router.put(
   '/:commentId',
