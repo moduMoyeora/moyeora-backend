@@ -74,7 +74,12 @@ export const validatePost = (
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    next(new BadRequestError());
+    const errorMessages = errors
+      .array()
+      .map((err) => err.msg)
+      .join(', ');
+
+    next(new BadRequestError(errorMessages));
   }
   next();
 };
