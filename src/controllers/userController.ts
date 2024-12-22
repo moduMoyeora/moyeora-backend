@@ -19,7 +19,7 @@ export const joinUser = async (
     const hashedPassword = await bcrypt.hashSync(password, salt);
 
     const user = await userModel.join(email, hashedPassword, nickname);
-    res.status(200).json(user);
+    res.status(201).json(user);
   } catch (error) {
     next(error);
   }
