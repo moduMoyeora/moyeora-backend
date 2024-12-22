@@ -1,4 +1,3 @@
-import { ForbiddenError } from '../errors/httpError';
 import * as eventModel from '../models/eventModel';
 import * as postModel from '../models/postModel';
 import { CreateEventDto, Event } from '../types/interface/eventInterface';
@@ -6,15 +5,8 @@ import { CreateEventDto, Event } from '../types/interface/eventInterface';
 export const createEvent = async (
   boardId: number,
   postId: number,
-  memberId: number,
   eventData: CreateEventDto
 ): Promise<Event> => {
-  const post = await postModel.getPostById(postId, boardId);
-
-  if (post.member_id !== memberId) {
-    throw new ForbiddenError();
-  }
-
   const event = await eventModel.create(postId, eventData);
   await postModel.updateStatus(postId, 'published');
 

@@ -16,15 +16,9 @@ export const createEvent = async (
   try {
     const boardId = Number(req.params.boardId);
     const postId = Number(req.params.postId);
-    const memberId = 1;
     const eventData = req.body;
 
-    const event = await eventService.createEvent(
-      boardId,
-      postId,
-      memberId,
-      eventData
-    );
+    const event = await eventService.createEvent(boardId, postId, eventData);
     res.status(201).json(event);
   } catch (error) {
     next(error);
