@@ -95,7 +95,7 @@ export const sendEmail = async (
     const receiverId = await eventModel.findUserByCommentId(commentId);
     const receiverEmail = await userModel.getEmailByMemberId(receiverId);
 
-    const post = await postModel.getPostById(boardId, postId);
+    const post = await postModel.getPostById(postId, boardId);
     const subject = post.title;
 
     const eventLink = `${process.env.FRONTEND_URL}/boards/${boardId}/posts/${postId}`;
